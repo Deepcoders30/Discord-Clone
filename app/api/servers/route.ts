@@ -8,31 +8,24 @@ export async function POST(req: Request) {
   try {
     const { name, imageUrl } = await req.json();
     const profile = await currentProfile();
-    try {
-      const { name, imageUrl } = await req.json();
-      const profile = await currentProfile();
 
-      if (!profile) {
-        console.log("Unauthorized", { status: 401 });
-      } else {
-        const server = await db.server.create({
-          data: {
-            profileId: profile.id,
-            name: name,
-            imageUrl: imageUrl,
-            inviteCode: uuidv4(),
-            channels: {
-              create: [{ name: "general", profileId: profile.id }],
-            },
-            members: {
-              create: [{ profileId: profile.id, role: MemberRole.ADMIN }],
-            },
+    if (!profile) {
+      console.log("Unauthorized", { status: 401 });
+    } else {
+      const server = await db.server.create({
+        data: {
+          profileId: profile.id,
+          name: name,
+          imageUrl: imageUrl,
+          inviteCode: uuidv4(),
+          channels: {
+            create: [{ name: "general", profileId: profile.id }],
           },
-        });
-      }
-    } catch (error) {
-      console.log("[SERVERS_POST]", error);
-      return new NextResponse("Internal Error", { status: 500 });
+          members: {
+            create: [{ profileId: profile.id, role: MemberRole.ADMIN }],
+          },
+        },
+      });
     }
   } catch (error) {
     console.log("[SERVERS_POST]", error);
