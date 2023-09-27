@@ -42,6 +42,7 @@ export const InitialModal = () => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +54,7 @@ export const InitialModal = () => {
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post("api/servers", values);
+      await axios.post("/api/servers", values);
 
       form.reset();
       router.refresh();
