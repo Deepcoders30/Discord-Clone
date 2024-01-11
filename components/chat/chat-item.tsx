@@ -1,22 +1,23 @@
 "use client";
 
-import { Member, MemberRole, Profile } from "@prisma/client";
-import { UserAvatar } from "@/components/user-avatar";
-import ActionTooltip from "@/components/action-tooltip";
-import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import * as z from "zod";
 import axios from "axios";
 import qs from "query-string";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Member, MemberRole, Profile } from "@prisma/client";
+import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+
+import { UserAvatar } from "@/components/user-avatar";
+import { cn } from "@/lib/utils";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
-import { useRouter, useParams } from "next/navigation";
+import ActionTooltip from "@/components/action-tooltip";
 
 interface ChatItemProps {
   id: string;
@@ -35,8 +36,8 @@ interface ChatItemProps {
 
 const roleIconMap = {
   GUEST: null,
-  MODERATOR: <ShieldCheck className="w-4 h-4 ml-2 text-indigo-500" />,
-  ADMIN: <ShieldAlert className="w-4 h-4 ml-2 text-indigo-500" />,
+  MODERATOR: <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
+  ADMIN: <ShieldAlert className="h-4 w-4 ml-2 text-rose-500" />,
 };
 
 const formSchema = z.object({
@@ -68,13 +69,6 @@ export const ChatItem = ({
     router.push(`/servers/${params?.serverId}/conversations/${member.id}`);
   };
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      content: content,
-    },
-  });
-
   useEffect(() => {
     const handleKeyDown = (event: any) => {
       if (event.key === "Escape" || event.keyCode === 27) {
@@ -84,8 +78,15 @@ export const ChatItem = ({
 
     window.addEventListener("keydown", handleKeyDown);
 
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keyDown", handleKeyDown);
   }, []);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      content: content,
+    },
+  });
 
   const isLoading = form.formState.isSubmitting;
 
@@ -117,9 +118,10 @@ export const ChatItem = ({
   const isModerator = currentMember.role === MemberRole.MODERATOR;
   const isOwner = currentMember.id === member.id;
   const canDeleteMessage = !deleted && (isAdmin || isModerator || isOwner);
-  const canEditMessage = !deleted && isOwner;
+  const canEditMessage = !deleted && isOwner && !fileUrl;
   const isPDF = fileType === "pdf" && fileUrl;
   const isImage = !isPDF && fileUrl;
+
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
@@ -142,7 +144,7 @@ export const ChatItem = ({
                 {roleIconMap[member.role]}
               </ActionTooltip>
             </div>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 ">
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">
               {timestamp}
             </span>
           </div>
@@ -205,8 +207,8 @@ export const ChatItem = ({
                         <div className="relative w-full">
                           <Input
                             disabled={isLoading}
-                            className="p-2 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus:visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
-                            placeholder="Edited Message"
+                            className="p-2 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
+                            placeholder="Edited message"
                             {...field}
                           />
                         </div>
