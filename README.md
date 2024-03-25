@@ -30,7 +30,7 @@
 ### Cloning the repository
 
 ```shell
-git clone https://github.com/Deepcoders30/discord-clone.git
+git clone https://github.com/Deepcoders30/Discord-Clone.git
 ```
 
 ### Install packages
