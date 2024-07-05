@@ -1,8 +1,10 @@
 
 
 # DISCORD CLONE
+It is a Discord clone focusing on real-time messaging with attachments, message editing, and deletion. It supports text, audio, and video calls, including 1:1 conversations and video calls between members. The platform includes robust member management, an advanced invite system, and a modern UI with TailwindCSS and ShadcnUI, featuring Light and Dark mode themes. Built for scalability, it utilizes Prisma ORM with a MySQL database hosted on Planetscale and ensures secure authentication through Clerk.
 
-### Features:
+
+## Features
 
 - Ability to send attachments as messages using UploadThing
 - Real-time message editing and deletion capabilities for all users
@@ -21,7 +23,10 @@
 - Utilization of MySQL database provided by Planetscale
 - Implementation of authentication mechanisms using Clerk
 
-  
+ 
+## Getting Started
+
+Instructions on setting up your project locally. To get a local copy up and running, follow these steps.
 
 ### Prerequisites
 
