@@ -19,6 +19,7 @@ interface ChatInputProps {
   type: "conversation" | "channel";
 }
 
+//form
 const formSchema = z.object({
   content: z.string().min(1),
 });
